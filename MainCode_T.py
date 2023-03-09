@@ -4,18 +4,24 @@ import zeroKey
 import sqlalchemy
 import pandas as pd
 import mysql.connector
+import subprocess
  
 from sqlalchemy import create_engine, text
 from Fetch_YF_Functons import *
 from datetime import datetime
 
 
+#print("pip freeze > requirements.txt")
+
+
+subprocess.call([r'Freeze.bat'])
 
 ticker     =  "ada-usd"  # lower case
 start_Date =  "2023-01-01"  #%Y/%m/%d 
 #end_Date  =  "2023-02-10"
 end_Date   =  datetime.now()
 interval   =  "1d"  # ["1m", "2m", "5m", "15m", "30m", "60m", "1h", "1d", "5d", "1wk", "1mo", "3mo"] 
+#interval   =  ["1m", "2m", "5m", "15m", "30m", "60m", "1h", "1d", "5d", "1wk", "1mo", "3mo"] 
     
             
 
@@ -48,21 +54,25 @@ data = fetch_DataF(strTicker=ticker, strStart_Date=start_Date, strEnd_Date=end_D
 
 table_name="{ticker}_{interval}".format(ticker= ticker.replace("-","") ,interval= interval)
 frame = data.to_sql(con=database_connection, name=table_name , if_exists='replace')
+print("Frame : ", frame)
 
-mycursor = mydb.cursor()
+
 query = """
-        create database if not exists traderbot ;
+
+        
         use traderbot ;
 
         """
+mycursor = mydb.cursor()
 mycursor.execute(query, multi=True)
 mydb.commit()
+
 
 # ---------------------------------- ---------------------------------- ---------------------------------- ---------------------------------- ----------------------------------
 # update table 
 
 mycursor = mydb.cursor()
-query = "update adausd_1d set Date = '11-01-11' where Date='2023-02-28' ; "
+query = "update adausd_1d set Date = '11-01-11' where Date='2023-01-01' ; "
 mycursor.execute(query)
 mydb.commit()
 
@@ -79,7 +89,7 @@ mydb.commit()
 # Delete from table
 
 mycursor = mydb.cursor()            
-query = " delete from adausd_1d where Date='2023-02-26';"
+query = " delete from adausd_1d where Date='2023-03-06';"
 mycursor.execute(query)
 mydb.commit()
 # ---------------------------------- ---------------------------------- ---------------------------------- ---------------------------------- ----------------------------------

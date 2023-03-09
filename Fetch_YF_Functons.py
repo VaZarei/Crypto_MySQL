@@ -1,9 +1,11 @@
 import yfinance as yf
 import datetime
+import time
 
 from datetime import date
 from datetime import datetime, date, timedelta
 from datetime import datetime
+from zeroKey import *
 
 
 
@@ -36,6 +38,35 @@ def count_date_Diff (start_Date, end_Date) :
 
 
 
+def tryExcept_Offline(strTicker, strStart_Date, strEnd_Date, strInterval) :
+     
+     
+     try:
+            data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
+            if data.empty:  
+                        time.sleep(5)
+                        print( "\nData is Empty.I'm Tring again...  ", strInterval)
+                        frame = data.to_sql(con=database_connection, name=table_name , if_exists='replace')
+
+     except :
+             print("Except  : --------------------------------------------------" , )
+             print("\n\n May be Download is Faild . I'm trying again ... ")
+             errorCounter = 0
+             _checkEmpty = True
+             while _checkEmpty :
+                                errorCounter +=1
+                                print("\nErrorCounter :", errorCounter)
+                                data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
+                                print("startDate: ", strStart_Date, "endDate : ", strEnd_Date)
+                                if data.empty:  
+                                        time.sleep(5)
+                                        print( "\nData is Empty.I'm Tring again...  ", strInterval)
+                                else:
+                                         _checkEmpty= False
+                                         table_name="{ticker}_{interval}".format(ticker= strTicker.replace("-","") ,interval= strInterval)
+                                         time.sleep(1)
+     
+     return data
 
 def fetch_DataF(strTicker, strStart_Date, strEnd_Date, strInterval) :
 
@@ -63,7 +94,7 @@ def fetch_DataF(strTicker, strStart_Date, strEnd_Date, strInterval) :
             print("End_Date          : ", strEnd_Date)
             print("interval          : ", strInterval ,"\n\n")
 
-            data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
+            data = tryExcept_Offline(strTicker, strStart_Date, strEnd_Date, strInterval)
             
         
         else:
@@ -88,7 +119,7 @@ def fetch_DataF(strTicker, strStart_Date, strEnd_Date, strInterval) :
                     print("End_Date          : ", strEnd_Date)
                     print("interval          : ", strInterval ,"\n\n")
 
-                    data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
+                    data = tryExcept_Offline(strTicker, strStart_Date, strEnd_Date, strInterval)
                     
 
                 if decide == "end" :
@@ -99,7 +130,7 @@ def fetch_DataF(strTicker, strStart_Date, strEnd_Date, strInterval) :
                     print("End_Date          : ", strEnd_Date)
                     print("interval          : ", strInterval ,"\n\n")
 
-                    data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
+                    data = tryExcept_Offline(strTicker, strStart_Date, strEnd_Date, strInterval)
                     
 
 
@@ -111,8 +142,7 @@ def fetch_DataF(strTicker, strStart_Date, strEnd_Date, strInterval) :
             print("End_Date          : ", strEnd_Date)
             print("interval          : ", strInterval ,"\n\n")
 
-            data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
-            print(data)
+            data = tryExcept_Offline(strTicker, strStart_Date, strEnd_Date, strInterval)
 
         else:
         
@@ -123,8 +153,7 @@ def fetch_DataF(strTicker, strStart_Date, strEnd_Date, strInterval) :
             print("End_Date          : ", strEnd_Date)
             print("interval          : ", strInterval ,"\n\n")
 
-            data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
-            print(data)
+            data = tryExcept_Offline(strTicker, strStart_Date, strEnd_Date, strInterval)
             
             
 
@@ -136,7 +165,7 @@ def fetch_DataF(strTicker, strStart_Date, strEnd_Date, strInterval) :
             print("End_Date          : ", strEnd_Date)
             print("interval          : ", strInterval ,"\n\n")
 
-            data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
+            data = tryExcept_Offline(strTicker, strStart_Date, strEnd_Date, strInterval)
             
 
         else:
@@ -148,7 +177,7 @@ def fetch_DataF(strTicker, strStart_Date, strEnd_Date, strInterval) :
             print("End_Date          : ", strEnd_Date)
             print("interval          : ", strInterval ,"\n\n")
 
-            data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
+            data = tryExcept_Offline(strTicker, strStart_Date, strEnd_Date, strInterval)
             
             
 
@@ -159,7 +188,7 @@ def fetch_DataF(strTicker, strStart_Date, strEnd_Date, strInterval) :
             print("End_Date          : ", strEnd_Date)
             print("interval          : ", strInterval ,"\n\n")
 
-            data = yf.download(strTicker, strStart_Date, strEnd_Date, interval=strInterval)
+            data = tryExcept_Offline(strTicker, strStart_Date, strEnd_Date, strInterval)
 
             
     else:
